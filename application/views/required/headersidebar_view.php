@@ -45,7 +45,7 @@
 			</a>
 		</span>
 		
-		<a class="navbar-brand" href="index.html">Avenxo</a>
+		<a class="anavbar-brand" href="<?php echo site_url(); ?>">Sistem Monitor Network</a>
 
 		<div class="toolbar-icon-bg hidden-xs" id="toolbar-search">
             <div class="input-group">
@@ -259,8 +259,12 @@
 
 	</ul>
 
+
+
 </header>
 
+    </div>
+    
         <div id="wrapper">
             <div id="layout-static">
                 <div class="static-sidebar-wrapper sidebar-default">
@@ -286,26 +290,15 @@
 		<li><a href="<?php echo site_url('dashboard') ?>"><i class="ti ti-dashboard"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>	
 		<li><a href="javascript:;"><i class="ti ti-harddrive"></i><span>Discovery Devices</span></a>
 			<ul class="acc-menu">
-				<li><a href="<?php echo site_url('mikrotik/ourDevices') ?>">Our Devices</a></li>
-				<li><a href="<?php echo site_url('mikrotik/findNewDevices') ?>">Find New Devices</a></li>
+				<li><a href="<?php echo site_url('discover/ourDevices'); ?>">Our Devices</a></li>
+				<li><a href="<?php echo site_url('discover/findNewDevices'); ?>">Find New Devices</a></li>
 			</ul>	
 		</li>
 		<li><a href="javascript:;"><i class="ti ti-rss-alt"></i><span>Hotspot</span></a>
 			<ul class="acc-menu">
-				<li><a href="ui-typography.html">Typography</a></li>
-				<li><a href="ui-buttons.html">Buttons</a></li>
-				<li><a href="ui-modals.html">Modal</a></li>
-                <li><a href="ui-progress.html">Progress</a></li>
-				<li><a href="ui-paginations.html">Paginations</a></li>
-				<li><a href="ui-breadcrumbs.html">Breadcrumbs</a></li>
-				<li><a href="ui-labelsbadges.html">Labels &amp; Badges</a></li>
-                <li><a href="ui-alerts.html">Alerts</a></li>
-                <li><a href="ui-tabs.html">Tabs</a></li>
-                <li><a href="ui-wells.html">Wells</a></li>
-                <li><a href="ui-icons-fontawesome.html">FontAwesome Icons</a></li>
-                <li><a href="ui-icons-themify.html">Themify Icons</a></li>
-				<li><a href="ui-helpers.html">Helpers</a></li>
-        		<li><a href="ui-imagecarousel.html">Images &amp; Carousel</a></li>
+				<li><a href="<?php echo site_url('hotspot/userprofiles'); ?>">User Profiles</a></li>
+				<li><a href="<?php echo site_url('hotspot/users'); ?>">Users</a></li>
+				<li><a href="<?php echo site_url('hotspot/useractive'); ?>">Users Active</a></li>
 			</ul>
 		</li>
         <li><a href="javascript:;"><i class="ti ti-receipt"></i><span>Log</span></a>
@@ -321,17 +314,8 @@
         </li>
 		<li><a href="javascript:;"><i class="ti ti-pie-chart"></i><span>Resource</span></a>
 			<ul class="acc-menu">
-				<li><a href="ui-forms.html">Form Layout</a></li>
-				<li><a href="form-components.html">Form Components</a></li>
-				<li><a href="form-pickers.html">Pickers</a></li>
-				<li><a href="form-wizard.html">Form Wizard</a></li>
-				<li><a href="form-validation.html">Form Validation</a></li>
-				<li><a href="form-masks.html">Form Masks</a></li>
-				<li><a href="form-dropzone.html">Dropzone Uploader</a></li>
-				<li><a href="form-summernote.html">Summernote</a></li>
-				<li><a href="form-markdown.html">Markdown Editor</a></li>
-				<li><a href="form-xeditable.html">Inline Editor</a></li>
-				<li><a href="form-gridforms.html">Grid Forms</a></li>
+				<li><a href="ui-forms.html">Main Router</a></li>
+				<li><a href="form-components.html">Another Router</a></li>
 			</ul>
 		</li>
 		<li>
@@ -374,3 +358,4 @@
         </div>
     </div>
 </div>
+

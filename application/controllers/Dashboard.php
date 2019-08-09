@@ -6,33 +6,72 @@
  	public function __construct()
  	{
  		parent::__construct();
+ 		if (isset($this->session->userdata)) {
+ 			redirect('login');
+ 		}
  		$this->load->model('mikrotik_connect','mikrotik');
  		
  	}
 
  	public function index()
- 	{
- 		$this->load->view('templates/dashboard_view');
+ 	{	
+ 		// $data['online'] = $this->getDeviceOnline();
+ 		// $data['all'] = $this->countDevices();
+ 		// $data['logs'] = $this->getLog();
+ 		// $data['user'] = $this->getUserCount();
+ 		// $data['active'] = $this->getActiveCount();
+ 		// $this->load->view('templates/dashboard_view',$data);
  		// $a = $this->mikrotik->connect();
  		// print_r($a);
  	}
- 	
- 	public function findDevices()
- 	{
- 		$neighbors = $this->mikrotik->getNeighbours();
- 		print_r($neighbors);
- 		$connect = array();
- 		foreach ($neighbors as $neighbor) {
-					$connect['identity'] = $neighbor['identity'];
-					$connect['mac-address'] = $neighbor['mac-address'];
-					$connect['address'] = $neighbor['address'] ;
-					$connect['version'] = $neighbor['version'];
-					$connect['status']= 'connect';
-					$connect['action']= '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="remove" onclick="modal('."'".$neighbor['identity']."'".')"><i class="glyphicon glyphicon-k"><i>..<a>';
-					$devices[]=$connect;
-				}
- 		json_encode($devices);
+
+ 	public function getDeviceOnline(){
+ 		$this->load->model('discover_model','discover');
+		$devices = $this->discover->getDevices();
+		$count = 0;
+		foreach ($devices as $device) {
+			if ($device['status']=='connect') {
+				$count++;
+			}
+		}
+		// print_r($count);
+		return $count;		
  	}
+
+// get the number of all devices
+ 	public function countDevices(){
+ 		$this->load->model('discover_model','discover');
+		$devices = $this->discover->getDevices();
+ 		if (isset($devices)) {
+ 			$allDevices = count($devices);
+ 			return $allDevices;
+ 		}else{
+ 			return 0;
+ 		}
+ 	}
+
+ 	public function getLog(){
+ 		$log = $this->mikrotik->getLogMikrotik();
+ 		return $log;
+ 	}
+
+ 	public function pushLog(){
+ 		$log = $this->mikrotik->getLogMikrotik();
+ 	}
+
+ 	public function getUserCount(){
+ 		$user = $this->mikrotik->getUsers();
+ 		$count = count($user);
+ 		return $count;
+ 	}
+
+ 	public function getActiveCount(){
+ 		$user = $this->mikrotik->getUserActive();
+ 		$count = count($user);
+ 		return $count;
+
+ 	}
+
 
  }
  

@@ -102,6 +102,17 @@ class RouterosAPI
             $this->socket = @stream_socket_client($PROTOCOL . $ip.':'. $this->port, $this->error_no, $this->error_str, $this->timeout, STREAM_CLIENT_CONNECT,$context);
             if ($this->socket) {
                 socket_set_timeout($this->socket, $this->timeout);
+                $this->write('/login', false);
+                $this->write('=name='.$login, false);
+                $this->write('=password='.$password);
+                $res = $this->read(false);
+                if(isset($res[0]) && $res[0] == '!done')
+                {
+                        $this->connected = true;
+                        break;
+                }
+
+                /*
                 $this->write('/login');
                 $RESPONSE = $this->read(false);
                 if (isset($RESPONSE[0]) && $RESPONSE[0] == '!done') {
@@ -119,6 +130,7 @@ class RouterosAPI
                         }
                     }
                 }
+                */
                 fclose($this->socket);
             }
             sleep($this->delay);

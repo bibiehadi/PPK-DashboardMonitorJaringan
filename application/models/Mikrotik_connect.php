@@ -9,7 +9,7 @@ class Mikrotik_connect extends CI_Model {
 
 	}
 
-	public function connect($ip='192.168.122.59',$username='admin',$password='',$port='8728'){
+	public function connect($ip='192.168.1.1',$username='api',$password='stikimonitor',$port='8728'){
 		if ($this->routerosapi->connect($ip,$username,$password,$port)) {
 			return true;
 		}else{
@@ -25,17 +25,11 @@ class Mikrotik_connect extends CI_Model {
 		}
 	}
 
-	public function getDeviceDB(){
-		if($data = $this->db->get('tb_devices')){
-			return $data->result_array();
-		}else{
-			return false;
-		}
-	}
+	
 
 	public function getDeviceID(){
 		$this->db->select('device_id');
-		$data = $this->db->get('tb_devices');
+		$data = $this->db->get('Mikrotik_Device');
 		return $data->result_array();
 	}
 
@@ -71,13 +65,12 @@ class Mikrotik_connect extends CI_Model {
 		
 	}
 
-	public function getResource($ip='192.168.122.59',$username='admin',$password='',$port='8728')
+	public function getResource($ip='192.168.1.254',$username='api',$password='stikimonitor',$port='8728')
 	{
 		if ($this->connect($ip,$username,$password,$port)) {
 			$API = $this->routerosapi;
-			$API->write("/ip/address/print");
-		   	$READ = $API->read(false);
-		   	return $READ;
+			$result = $API->comm("/system/resource/print");
+		   	return $result;
 		   	$API->disconnect();
 		}else{
 			return false;
@@ -114,7 +107,11 @@ class Mikrotik_connect extends CI_Model {
 
 	public function getLogMikrotik(){
 		if ($this->connect()) {
-			# code...
+			$API = $this->routerosapi;
+			$logs = $API->comm('/log/print');
+			return $logs;
+		}else{
+			return false;
 		}
 	}
 
@@ -122,12 +119,12 @@ class Mikrotik_connect extends CI_Model {
 	{
 		if ($this->connect()) {
 			$API = $this->routerosapi;
+
 			$API->write('/ping',false);
 			$API->write('=address='.$identity,false); 
 			$API->write('=count=3',false);
 			$API->write('=interval=1');
-			$ARRAY4 = $API->read(false);
-			// echo "<pre>". print_r($ARRAY4) ." </pre>";
+			$ARRAY4 = $API->read();
 			$API->disconnect();
 			return $ARRAY4;
 		}else{
@@ -135,6 +132,118 @@ class Mikrotik_connect extends CI_Model {
 		}
 		
 	}
+
+	public function getDeviceIdentity($ip)
+	{
+		$data = $this->userDevice();
+		try {
+			if ($this->connect($ip,$data['user_usrnm'], $data['user_pwd'], $data['user_port'])) {
+				$API = $this->routerosapi;
+				$API->write("/system/identity/print");
+			   	$READ = $API->read();
+			   	return $READ;
+			   	$API->disconnect();
+		   }else{
+		   	echo 'disconnect';
+		   }
+		} catch (Exception $e) {
+			return 'Error : '.$e;
+		}
+		
+	}
+
+// Get Setting 
+	public function userDevice(){
+		$data = $this->db->get_where('tb_userDevice', array('id'=> 1));
+		if($data){
+			return $data->row_array();
+		}else{
+			return false;
+		}
+	}
+
+	public function reboot($ip='')
+	{
+		$userDevice = $this->userDevice();
+		if ($this->connect($ip, $userDevice['user_usrnm'], $userDevice['user_pwd'], $userDevice['user_port'])) {
+			$API = $this->routerosapi;
+			$API->write('/system/reboot');
+			$ARRAY4 = $API->read();
+			$API->disconnect();
+			return $ARRAY4;
+		}else{
+			return false;
+		}
+	}
+// >>>>> HOTSPOT 
+	public function getUsers()
+	{
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$API->write('/ip/hotspot/user/print');
+			$users = $API->read();
+			$API->disconnect();
+			return $users;
+		}else{
+			return false;
+		}
+	}
+
+	public function getUserProfiles()
+	{
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$API->write('/ip/hotspot/user/profile/print');
+			$profiles = $API->read();
+			$API->disconnect();
+			return $profiles;
+		}else{
+			return false;
+		}
+	}
+
+	public function removeUserProfile($id){
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$API->write('ip/hotspot/profile/remove',false);
+			$API->write('=.id='. $id);
+			$write = $API->read();
+			return $write;
+		}
+	}
+
+	public function getUserActive()
+	{
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$API->write('/ip/hotspot/active/print');
+			$active = $API->read();
+			$API->disconnect();
+			return $active;
+		}else{
+			return false;
+		}
+	}
+
+	public function countUsers(){
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$users = $API->comm('/ip/hotspot/user/print', array(
+                "count-only" => ''
+            ));
+            $count['count_hotspot_user'] = isset($users) ? $users : 0;
+			
+			$active = $API->comm('/ip/hotspot/active/print', array(
+                "count-only" => ''
+            ));
+            $count['count_hotspot_active'] = isset($active) ? $active : 0;					
+			$count['persen_hotspot_active'] = $count['count_hotspot_active'] / $count['count_hotspot_user'] * 100;
+			
+			$array1 = $API->comm('/ip/neighbor/print');
+			return $count;
+		}
+	}
+
 
 }
 
