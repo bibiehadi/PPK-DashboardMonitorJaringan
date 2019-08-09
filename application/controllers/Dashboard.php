@@ -6,7 +6,7 @@
  	public function __construct()
  	{
  		parent::__construct();
- 		if (isset($this->session->userdata)) {
+ 		if ($this->session->userdata['status']!='login') {
  			redirect('login');
  		}
  		$this->load->model('mikrotik_connect','mikrotik');
@@ -15,14 +15,14 @@
 
  	public function index()
  	{	
- 		// $data['online'] = $this->getDeviceOnline();
- 		// $data['all'] = $this->countDevices();
- 		// $data['logs'] = $this->getLog();
- 		// $data['user'] = $this->getUserCount();
- 		// $data['active'] = $this->getActiveCount();
- 		// $this->load->view('templates/dashboard_view',$data);
- 		// $a = $this->mikrotik->connect();
- 		// print_r($a);
+ 		$data['online'] = $this->getDeviceOnline();
+ 		$data['all'] = $this->countDevices();
+ 		$data['logs'] = $this->getLog();
+ 		$data['user'] = $this->getUserCount();
+ 		$data['active'] = $this->getActiveCount();
+ 		$this->load->view('templates/dashboard_view',$data);
+ 		$a = $this->mikrotik->connect();
+ 		print_r($a);
  	}
 
  	public function getDeviceOnline(){
