@@ -79,6 +79,7 @@
                 <li><span class="demo-brown"></span></li>
             </ul>
         </div>
+    </div>
 
 
 <!-- Load site level scripts -->

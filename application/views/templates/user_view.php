@@ -1,4 +1,4 @@
-<?php $this->load->view('templates/headersidebar_view'); ?>
+<?php $this->load->view('required/headersidebar_view'); ?>
                 </div>
                 </div>
                 <div class="static-content-wrapper">
@@ -134,7 +134,7 @@
 <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script> -->
 
-<?php $this->load->view('templates/footer_view'); ?>
+<?php $this->load->view('required/footer_view'); ?>
 
 
 <!-- End loading site level scripts -->

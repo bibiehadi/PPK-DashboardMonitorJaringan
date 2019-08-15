@@ -7,6 +7,11 @@ class Login extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		// if (isset($this->session->userdata['status'])) {
+ 	// 		if ($this->session->userdata['status']=='login') {
+ 	// 			redirect('dashboard');
+ 	// 		}
+ 	// 	}
 		$this->load->model('Login_model','login');
 		
 	}

@@ -1,19 +1,31 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 class Mikrotik_connect extends CI_Model {
-
+	
 	public function __construct()
 	{
 		parent::__construct();
 
 	}
 
-	public function connect($ip='192.168.1.1',$username='api',$password='stikimonitor',$port='8728'){
-		if ($this->routerosapi->connect($ip,$username,$password,$port)) {
-			return true;
+	public function connect($ip='',$username='',$password='',$port=''){
+		if ($ip==null) {
+			$strsql = $this->db->query("select * from tbl_mainRouter where id=1");
+			if ($strsql->num_rows() > 0){
+			   $koneksi = $strsql->row_array(); 
+			   // print_r($koneksi);
+			}
+			if ($this->routerosapi->connect($koneksi['ip'],$koneksi['username'],$koneksi['password'],$koneksi['port'])) {
+				return true;
+			}else{
+				return false;
+			}
 		}else{
-			return false;
+			if ($this->routerosapi->connect($ip,$username,$password,$port)) {
+				return true;
+			}else{
+				return false;
+			}
 		}
 	}
 
@@ -25,15 +37,13 @@ class Mikrotik_connect extends CI_Model {
 		}
 	}
 
-	
-
 	public function getDeviceID(){
 		$this->db->select('device_id');
 		$data = $this->db->get('Mikrotik_Device');
 		return $data->result_array();
 	}
 
-	public function getNeighbours(){
+	public function getNeighbors(){
 		if ($this->connect()) {
 			$API = $this->routerosapi;
 			$API->write('/ip/neighbor/print');
@@ -65,7 +75,7 @@ class Mikrotik_connect extends CI_Model {
 		
 	}
 
-	public function getResource($ip='192.168.1.254',$username='api',$password='stikimonitor',$port='8728')
+	public function getResource($ip='',$username='',$password='',$port='')
 	{
 		if ($this->connect($ip,$username,$password,$port)) {
 			$API = $this->routerosapi;
@@ -225,6 +235,19 @@ class Mikrotik_connect extends CI_Model {
 		}
 	}
 
+	public function getUserConnect()
+	{
+		if ($this->connect()) {
+			$API = $this->routerosapi;
+			$API->write('/ip/hotspot/host/print');
+			$active = $API->read();
+			$API->disconnect();
+			return $active;
+		}else{
+			return false;
+		}
+	}
+
 	public function countUsers(){
 		if ($this->connect()) {
 			$API = $this->routerosapi;
@@ -236,7 +259,12 @@ class Mikrotik_connect extends CI_Model {
 			$active = $API->comm('/ip/hotspot/active/print', array(
                 "count-only" => ''
             ));
-            $count['count_hotspot_active'] = isset($active) ? $active : 0;					
+            $count['count_hotspot_active'] = isset($active) ? $active : 0;
+            $connect = $API->comm('/ip/hotspot/host/print', array(
+                "count-only" => ''
+            ));
+            $count['count_user_connect'] = isset($connect) ? $connect : 0;
+
 			$count['persen_hotspot_active'] = $count['count_hotspot_active'] / $count['count_hotspot_user'] * 100;
 			
 			$array1 = $API->comm('/ip/neighbor/print');

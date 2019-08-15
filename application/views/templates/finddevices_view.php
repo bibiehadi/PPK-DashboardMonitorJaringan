@@ -18,8 +18,7 @@
 									<div class="col-md-12">
 										<div class="panel panel-default">
 											<div class="panel-heading">
-												<h2>Our Devices</h2>
-												
+												<h2>Discover Another Router</h2>
 											</div>
 											<div class="panel-body no-padding">
 												<div class="row" style="margin: 10px">
@@ -28,9 +27,11 @@
 															<thead>
 																 <tr>
 													                <th>Identity</th>
-													                <th>Mac-Address</th>
-													                <th>IP Address</th>
-													                <th>Version</th>
+									                                <th>Mac-Address</th>
+									                                <th>IP Address</th>
+									                                <th>Version</th>
+									                                <th>Uptime</th>
+									                                <th>Board</th>
 													                <th style="width:40px;">Action</th>
 													            </tr>
 															</thead>
@@ -119,7 +120,7 @@
 			"severSide"  : true,
 			"order" : [],
 			"ajax" : {
-				"url" : "<?php echo site_url('discover/findDevicesJSON') ?>",
+				"url" : "<?php echo site_url('discover/findNewDevicesJSON') ?>",
 				// "type" : "POST",
 				"dataType" : "JSON"
 			},
@@ -131,9 +132,11 @@
 	  //       ],
 	 		"columns" : [
 		  		{"data" : "identity"},
-		  		{"data" : "mac-address"},
-		  		{"data" : "address4"},
-		  		{"data" : "version"},
+		        {"data" : "mac-address"},
+		        {"data" : "address4"},
+		        {"data" : "version"},
+		        {"data" : "uptime"},
+		        {"data" : "board"},
 		  		{"data" : "action"},
 	  		],
 
@@ -144,12 +147,11 @@
 	 	var device_MAC=$(this).data('mac-address');
 	 	var device_IPv4=$(this).data('address4');
 	 	var device_OSVersion=$(this).data('version');
-           $('#ModalAddDevice').modal('show');
-            $('[name="device_id"]').val(device_id);
-            $('[name="identity"]').val(identity);
-            $('[name="mac-address"]').val(mac-address);
-            $('[name="address4"]').val(address4);
-            $('[name="version"]').val(version);
+            $('#ModalAddDevice').modal('show');
+            $('[name="identity"]').val(device_identity);
+            $('[name="mac-address"]').val(device_mac-address);
+            $('[name="address4"]').val(device_address4);
+            $('[name="version"]').val(device_version);
     	});
 			
 			// table: var table = $('#findDevices').DataTable();
@@ -167,7 +169,7 @@
 			setTimeout(function(){ getDeviceJsonByInterval(); }, 3000); // 3 Second
 		})
 		function getDeviceJsonByInterval(){
-			$.get("<?php echo site_url()?>/discover/findDevicesJSON",function(respon){
+			$.get("<?php echo site_url()?>/discover/findNewDevicesJSON",function(respon){
 				table.ajax.reload();
 				setTimeout(function(){ getDeviceJsonByInterval(); }, 3000); // 3 Second		
 			}).fail(function(data){

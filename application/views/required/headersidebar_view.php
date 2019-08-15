@@ -285,50 +285,40 @@
     </div>
 	<div class="widget stay-on-collapse" id="widget-sidebar">
         <nav role="navigation" class="widget-body">
-	<ul class="acc-menu">
-		<li class="nav-separator"><span>Explore</span></li>
-		<li><a href="<?php echo site_url('dashboard') ?>"><i class="ti ti-dashboard"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>	
-		<li><a href="javascript:;"><i class="ti ti-harddrive"></i><span>Discovery Devices</span></a>
 			<ul class="acc-menu">
-				<li><a href="<?php echo site_url('discover/ourDevices'); ?>">Our Devices</a></li>
-				<li><a href="<?php echo site_url('discover/findNewDevices'); ?>">Find New Devices</a></li>
-			</ul>	
-		</li>
-		<li><a href="javascript:;"><i class="ti ti-rss-alt"></i><span>Hotspot</span></a>
-			<ul class="acc-menu">
-				<li><a href="<?php echo site_url('hotspot/userprofiles'); ?>">User Profiles</a></li>
-				<li><a href="<?php echo site_url('hotspot/users'); ?>">Users</a></li>
-				<li><a href="<?php echo site_url('hotspot/useractive'); ?>">Users Active</a></li>
+				<li class="nav-separator"><span>Explore</span></li>
+				<li><a href="<?php echo site_url('dashboard') ?>"><i class="ti ti-dashboard"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>	
+				<li><a href="javascript:;"><i class="ti ti-harddrive"></i><span>Discovery Devices</span></a>
+					<ul class="acc-menu">
+						<li><a href="<?php echo site_url('discover/ourDevices'); ?>">Our Devices</a></li>
+						<li><a href="<?php echo site_url('discover/findNewDevices'); ?>">Find New Devices</a></li>
+					</ul>	
+				</li>
+				<li><a href="javascript:;"><i class="ti ti-rss-alt"></i><span>Hotspot</span></a>
+					<ul class="acc-menu">
+						<li><a href="<?php echo site_url('hotspot/userprofiles'); ?>">User Profiles</a></li>
+						<li><a href="<?php echo site_url('hotspot/users'); ?>">Users</a></li>
+						<li><a href="<?php echo site_url('hotspot/useractive'); ?>">Users Active</a></li>
+					</ul>
+				</li>
+				<li><a href="javascript:;"><i class="ti ti-pie-chart"></i><span>Graphics</span></a>
+					<ul class="acc-menu">
+						<li><a href="ui-forms.html">Main Router</a></li>
+						<li><a href="form-components.html">Another Router</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="javascript:;"><i class="ti ti-settings"></i><span>Settings</span></a>
+					<ul class="acc-menu">
+						<li><a href="ui-panels.html">Panels</a></li>
+						<li><a href="ui-advancedpanels.html">Draggable Panels</a></li>
+					</ul>
+				</li>
 			</ul>
-		</li>
-        <li><a href="javascript:;"><i class="ti ti-receipt"></i><span>Log</span></a>
-        	<ul class="acc-menu">
-        		<li><a href="ui-tiles.html">Tiles</a></li>
-        		<li><a href="custom-skylo.html">Page Progress</a></li>
-        		<li><a href="custom-bootbox.html">Bootbox</a></li>
-        		<li><a href="custom-pines.html">Pines Notification</a></li>
-        		<li><a href="custom-pulsate.html">Pulsate</a></li>
-				<li><a href="custom-knob.html">jQuery Knob</a></li>
-				<li><a href="custom-ionrange.html">Ion Range Slider</a></li>
-        	</ul>
-        </li>
-		<li><a href="javascript:;"><i class="ti ti-pie-chart"></i><span>Resource</span></a>
-			<ul class="acc-menu">
-				<li><a href="ui-forms.html">Main Router</a></li>
-				<li><a href="form-components.html">Another Router</a></li>
-			</ul>
-		</li>
-		<li>
-			<a href="javascript:;"><i class="ti ti-settings"></i><span>Settings</span></a>
-			<ul class="acc-menu">
-				<li><a href="ui-panels.html">Panels</a></li>
-				<li><a href="ui-advancedpanels.html">Draggable Panels</a></li>
-			</ul>
-	</ul>
-</nav>
+		</nav>
     </div>
 
-    <div class="widget" id="widget-progress">
+    <!-- <div class="widget" id="widget-progress">
         <div class="widget-heading">
             Progress
         </div>
@@ -356,6 +346,6 @@
             </div>
 
         </div>
-    </div>
+    </div> -->
 </div>
 

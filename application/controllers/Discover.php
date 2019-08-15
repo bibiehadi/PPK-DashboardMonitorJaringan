@@ -6,7 +6,9 @@ class Discover extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		//Do your magic here
+		if ($this->session->userdata['status']!='login') {
+ 			redirect('login');
+ 		}
 		$this->load->model('mikrotik_connect','mikrotik');
 		$this->load->model('discover_model','discover');
 	}
@@ -78,12 +80,83 @@ class Discover extends CI_Controller {
 
 	public function findNewDevices()
 	{
+		
 		$this->load->view('templates/finddevices_view');
 	}
 
+	public function findNewDevicesJSON()
+ 	{
+ 		$ourDevices = $this->db->query("select `mac-address` from tbl_mDevices");
+		if ($ourDevices->num_rows() > 0){
+		   $mac = $ourDevices->result_array();
+		}
+ 		$neighbors = $this->mikrotik->getNeighbors();
+ 		foreach ($neighbors as $neighbor) {
+ 			$count = 0;
+ 			foreach ($mac as $key) {
+		    	if ($neighbor['mac-address'] == $key['mac-address']) {
+		    		$count++;
+		    	}
+		    }
+		    if ($count == 0) {
+		    	$connect['mac-address'] = $neighbor['mac-address'];
+				if(isset($neighbor['identity'])){
+					$connect['identity'] = $neighbor['identity'];
+				}else{
+					$connect['identity'] = '';
+				}
+				if (isset($neighbor['address4'])) {
+					$connect['address4'] = $neighbor['address4'];
+				}else{	
+					$connect['address4'] = '';
+				}
+				if(isset($neighbor['version'])){
+					$connect['version'] = $neighbor['version'];
+				}else{
+					$connect['version'] = '';	
+				}
+				if(isset($neighbor['age'])){
+					$connect['age'] = $neighbor['age'];
+				}else{
+					$connect['age'] = '';	
+				}
+				if(isset($neighbor['uptime'])){
+					$connect['uptime'] = $neighbor['uptime'];
+				}else{
+					$connect['uptime'] = '';	
+				}
+				if(isset($neighbor['board'])){
+					$connect['board'] = $neighbor['board'];
+				}else{
+					$connect['board'] = '';	
+				}
+				if (isset($neighbor['address4'])) {
+					$connect['status'] = $this->discover->pingCount($neighbor['address4']);
+				}else{
+					$connect['status'] = $this->discover->pingCount($neighbor['mac-address']);
+				}
+				$connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".'>..<a>';
+				
+				$devices[]=$connect;
+			}
+			 
+		    		
+		}
+
+				
+		$output = array(
+				"draw" => $this->input->post('draw'),
+				"data" => $devices,
+			);
+		//$this->discover->testPing($neighbors);
+		 //echo '<pre>';
+		 //print_r($neighbors);
+		echo json_encode($output);
+ 	}
+
 	public function updateDevicesJSON()
  	{
- 		$neighbors = $this->mikrotik->getNeighbours();
+ 		$neighbors = $this->discover->getDevices();
  		// print_r($neighbors);
  		$connect = array();
  		foreach ($neighbors as $neighbor) {

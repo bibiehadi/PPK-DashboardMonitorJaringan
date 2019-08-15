@@ -6,14 +6,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  	function __construct()
  	{
 		parent::__construct();
+		if ($this->session->userdata['status']!='login') {
+ 			redirect('login');
+ 		}
  		$this->load->model('mikrotik_connect','mikrotik');
  		$this->load->model('hotspot_model','hotspot');
  	}
-
- 	public function index()
-	{	
- 		
-	}
 
 /**
 $neighbors = $this->mikrotik->getNeighbours();

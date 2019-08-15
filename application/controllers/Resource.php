@@ -5,6 +5,9 @@ class Resource extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		if ($this->session->userdata['status']!='login') {
+ 			redirect('login');
+ 		}
 		$this->load->model('mikrotik_connect','mikrotik');	
 	}
 
@@ -14,10 +17,12 @@ class Resource extends CI_Controller {
 	}
 
 	public function mainResource(){
-		$resource = $this->mikrotik->getResource();
-		$resource1 = $this->mikrotik->getResource($ip='192.168.1.1',$username='api',$password='stikimonitor',$port='8728');
-		print_r($resource[0]);
-		print_r($resource1);
+		$resource = $this->mikrotik->connect();
+		print_r($resource);	
+			// $resource1 = $this->mikrotik->getResource($ip='192.168.1.1',$username='api',$password='stikimonitor1',$port='8728');	
+			// print_r($resource1[0]['cpu-load']);
+		
+		
 	}
 
 }
