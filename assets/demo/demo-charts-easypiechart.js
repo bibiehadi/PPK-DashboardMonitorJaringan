@@ -55,13 +55,7 @@ $(function() {
         });
 
 
-        $('#updatePieCharts').on('click', function() {
-            $('.easypiechart#newvisits').data('easyPieChart').update(Math.random()*100);
-            $('.easypiechart#bouncerate').data('easyPieChart').update(Math.random()*100);
-            $('.easypiechart#clickrate').data('easyPieChart').update(Math.random()*100);
-            $('.easypiechart#covertionrate').data('easyPieChart').update(Math.random()*100);
-            return false;
-        });
+        
     }
     catch(e) {}
 

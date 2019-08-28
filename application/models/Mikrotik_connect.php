@@ -29,13 +29,13 @@ class Mikrotik_connect extends CI_Model {
 		}
 	}
 
-	public function addDevice($data){
-		if ($this->db->insert('tb_devices',$data)) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+	// public function addDevice($data){
+	// 	if ($this->db->insert('tb_devices',$data)) {
+	// 		return true;
+	// 	}else{
+	// 		return false;
+	// 	}
+	// }
 
 	public function getDeviceID(){
 		$this->db->select('device_id');
@@ -43,6 +43,7 @@ class Mikrotik_connect extends CI_Model {
 		return $data->result_array();
 	}
 
+// >>>>>> CHECK DEVICE STATUS
 	public function getNeighbors(){
 		if ($this->connect()) {
 			$API = $this->routerosapi;
@@ -80,34 +81,32 @@ class Mikrotik_connect extends CI_Model {
 		if ($this->connect($ip,$username,$password,$port)) {
 			$API = $this->routerosapi;
 			$result = $API->comm("/system/resource/print");
-		   	return $result;
 		   	$API->disconnect();
+		   	return $result;
 		}else{
 			return false;
 		}
 		
 	}
 
-	public function getTrafficInterface($interface='ether1'){
+	public function getTrafficInterface($interface){
 		if ($this->connect()) {
+			$API = $this->routerosapi;
 			$API->write("/interface/monitor-traffic",false);
 		   	$API->write("=interface=".$interface,false);  
 		   	$API->write("=once=",true);
 		   	$READ = $API->read(false);
-		   	$ARRAY = $API->parse_response($READ);
+		   	$ARRAY = $API->parseResponse($READ);
 			if(count($ARRAY)>0){  
 				$rx = number_format($ARRAY[0]["rx-bits-per-second"]/1024,1);
 				$tx = number_format($ARRAY[0]["tx-bits-per-second"]/1024,1);
-				$rows['name'] = 'Tx';
-				$rows['data'][] = $tx;
-				$rows2['name'] = 'Rx';
-				$rows2['data'][] = $rx;
+				$rows['tx'][] = $tx;
+				$rows['rx'][] = $rx;
+				$rows['point'][] = date("h:i:s");
 			}else{  
 				echo $ARRAY['!trap'][0]['message'];	 
 			}
-			$result = array();
-			array_push($result,$rows);
-			array_push($result,$rows2);
+			$result = $rows;
 			$API->disconnect();
 			return $result;
 		}else{
@@ -119,11 +118,13 @@ class Mikrotik_connect extends CI_Model {
 		if ($this->connect()) {
 			$API = $this->routerosapi;
 			$logs = $API->comm('/log/print');
+		   	$API->disconnect();
 			return $logs;
 		}else{
 			return false;
 		}
 	}
+
 
 	public function pingDevice($identity='0C:62:A7:F0:64:00')
 	{
@@ -151,8 +152,8 @@ class Mikrotik_connect extends CI_Model {
 				$API = $this->routerosapi;
 				$API->write("/system/identity/print");
 			   	$READ = $API->read();
-			   	return $READ;
 			   	$API->disconnect();
+			   	return $READ;
 		   }else{
 		   	echo 'disconnect';
 		   }
@@ -162,7 +163,7 @@ class Mikrotik_connect extends CI_Model {
 		
 	}
 
-// Get Setting 
+// >>>>>> SETTINGS
 	public function userDevice(){
 		$data = $this->db->get_where('tb_userDevice', array('id'=> 1));
 		if($data){
@@ -218,6 +219,7 @@ class Mikrotik_connect extends CI_Model {
 			$API->write('ip/hotspot/profile/remove',false);
 			$API->write('=.id='. $id);
 			$write = $API->read();
+			$API->disconnect();
 			return $write;
 		}
 	}
@@ -268,6 +270,7 @@ class Mikrotik_connect extends CI_Model {
 			$count['persen_hotspot_active'] = $count['count_hotspot_active'] / $count['count_hotspot_user'] * 100;
 			
 			$array1 = $API->comm('/ip/neighbor/print');
+			$API->disconnect();
 			return $count;
 		}
 	}

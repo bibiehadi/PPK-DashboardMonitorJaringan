@@ -29,7 +29,6 @@
 <link type="text/css" href="<?php echo base_url('') ?>assets/plugins/fullcalendar/fullcalendar.css" rel="stylesheet"> 						<!-- FullCalendar -->
 <link type="text/css" href="<?php echo base_url('') ?>assets/plugins/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet"> 			<!-- jVectorMap -->
 <link type="text/css" href="<?php echo base_url('') ?>assets/plugins/switchery/switchery.css" rel="stylesheet">   							<!-- Switchery -->
-
     </head>
 
     <body class="animated-content">

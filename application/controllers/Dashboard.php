@@ -62,6 +62,11 @@
  		return $count;
  	}
 
+ 	function mainResource(){
+ 		$resource = $this->mikrotik->getResource();
+ 		echo json_encode($resource);
+ 	}
+
  	function getAllResource(){
  		$userRouter = $this->db->query("select username,password from tbl_mainRouter where id=2");
 		if ($userRouter->num_rows() > 0){
@@ -72,19 +77,25 @@
 		$this->load->model('discover_model','discover');
 		$devices = $this->discover->getDevices();
 		foreach ($devices as $device) {
-			$resource = $this->mikrotik->getResource($device['address4'],$username,$password);
-			// $resource = $this->mikrotik->getResource();
-			// print_r($resource);
-			if (isset($device['identity'])) {
+			if ($device['status'] == 'disconnect') {
 				$data['identity'] = $device['identity'];
-			}
-			if (isset($resource[0]['cpu-load'])) {
-				$data['cpu-load'] = $resource[0]['cpu-load'];
-				$ram = (($resource[0]['total-memory']-$resource[0]['free-memory'])/$resource[0]['total-memory'])*100;
-				$data['memory-load'] = round($ram,2);
-			}else{
 				$data['cpu-load'] = 0;
 				$data['memory-load'] = 0;
+			}else{
+				$resource = $this->mikrotik->getResource($device['address4'],$username,$password);
+				// $resource = $this->mikrotik->getResource();
+				// print_r($resource);
+				if (isset($device['identity'])) {
+					$data['identity'] = $device['identity'];
+				}
+				if (isset($resource[0]['cpu-load'])) {
+					$data['cpu-load'] = $resource[0]['cpu-load'];
+					$ram = (($resource[0]['total-memory']-$resource[0]['free-memory'])/$resource[0]['total-memory'])*100;
+					$data['memory-load'] = round($ram);
+				}else{
+					$data['cpu-load'] = 0;
+					$data['memory-load'] = 0;
+				}
 			}
 			$allrouter[] = $data;
 		}
@@ -97,6 +108,10 @@
 		));
  	}
 
+ 	function getTrafficInterface(){
+ 		$interface = $this->mikrotik->getTrafficInterface('E13-RadioIndosat');
+ 		echo json_encode($interface);
+ 	}
 
  }
  

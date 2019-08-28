@@ -116,7 +116,7 @@
 <script type="text/javascript" src="<?php echo base_url('') ?>assets/plugins/datatables/dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="<?php echo base_url('') ?>assets/demo/demo-datatables.js"></script>
 <script type="text/javascript">
-         var table = $('#ourDevices').dataTable({
+    var table = $('#ourDevices').dataTable({
       "processing" : true,
       "severSide"  : true,
       "order" : [],

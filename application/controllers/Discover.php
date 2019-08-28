@@ -86,19 +86,9 @@ class Discover extends CI_Controller {
 
 	public function findNewDevicesJSON()
  	{
- 		$ourDevices = $this->db->query("select `mac-address` from tbl_mDevices");
-		if ($ourDevices->num_rows() > 0){
-		   $mac = $ourDevices->result_array();
-		}
  		$neighbors = $this->mikrotik->getNeighbors();
  		foreach ($neighbors as $neighbor) {
- 			$count = 0;
- 			foreach ($mac as $key) {
-		    	if ($neighbor['mac-address'] == $key['mac-address']) {
-		    		$count++;
-		    	}
-		    }
-		    if ($count == 0) {
+ 			if (!$this->checkDeviceAvailable($neighbor['identity'])) {
 		    	$connect['mac-address'] = $neighbor['mac-address'];
 				if(isset($neighbor['identity'])){
 					$connect['identity'] = $neighbor['identity'];
@@ -130,19 +120,11 @@ class Discover extends CI_Controller {
 				}else{
 					$connect['board'] = '';	
 				}
-				if (isset($neighbor['address4'])) {
-					$connect['status'] = $this->discover->pingCount($neighbor['address4']);
-				}else{
-					$connect['status'] = $this->discover->pingCount($neighbor['mac-address']);
-				}
 				$connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".'>..<a>';
 				
 				$devices[]=$connect;
-			}
-			 
-		    		
+			}			    		
 		}
-
 				
 		$output = array(
 				"draw" => $this->input->post('draw'),
@@ -154,12 +136,28 @@ class Discover extends CI_Controller {
 		echo json_encode($output);
  	}
 
+ 	public function checkDeviceAvailable($id){
+ 		$devicesDB = $this->discover->getDevices();
+ 		$count = 0;
+ 		foreach ($devicesDB as $device) {
+ 			if ($device['identity'] == $id) {
+ 				$count++;
+ 			}
+ 		}
+ 		if ($count>0) {
+ 			return true;
+ 		}else{
+ 			return false;
+ 		}
+ 	}
+
 	public function updateDevicesJSON()
  	{
- 		$neighbors = $this->discover->getDevices();
+ 		$neighbors = $this->mikrotik->getNeighbors();
  		// print_r($neighbors);
  		$connect = array();
  		foreach ($neighbors as $neighbor) {
+ 			if ($this->checkDeviceAvailable($neighbor['identity'])) {
  				$connect['mac-address'] = $neighbor['mac-address'];
 				if(isset($neighbor['identity'])){
 					$connect['identity'] = $neighbor['identity'];
@@ -196,19 +194,16 @@ class Discover extends CI_Controller {
 				}else{
 					$connect['status'] = $this->discover->pingCount($neighbor['mac-address']);
 				}
-				$connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".' ><i class="glyphicon glyphicon-k"><i>..<a> <a class="btn_reboot btn btn-sm btn-danger" href="javascript:void(0)" title="btnReboot" data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".'><i class="glyphicon glyphicon-k"><i>reboot<a>';
+				// $connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".' ><i class="glyphicon glyphicon-k"><i>..<a> <a class="btn_reboot btn btn-sm btn-danger" href="javascript:void(0)" title="btnReboot" data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".'><i class="glyphicon glyphicon-k"><i>reboot<a>';
 				$devices[]=$connect;
- 					// }
-				}
+ 			}
+ 		}
 				
 		$output = array(
 				"draw" => $this->input->post('draw'),
 				"data" => $devices,
 			);
 		$this->discover->setDevice($devices);
-		//$this->discover->testPing($neighbors);
-		 //echo '<pre>';
-		 //print_r($neighbors);
 		echo json_encode($output);
  	}
 
@@ -229,9 +224,8 @@ class Discover extends CI_Controller {
  	// }
 
  	public function countPing($address){
- 		$ping = $this->mikrotik->pingDevice($connect['address']);
-		return ($ping);
-					
+ 		$ping = $this->discover->pingCount($address);
+		print_r($ping);					
  	}
 
  	public function anotherDevice(){
