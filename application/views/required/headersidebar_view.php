@@ -44,7 +44,7 @@
 			</a>
 		</span>
 		
-		<a class="anavbar-brand" href="<?php echo site_url(); ?>">Sistem Monitor Network</a>
+		<a class="anavbar-brand" href="<?php echo site_url() ?>"><img style="width: 90px; height: 50px; margin: 5px" src="<?php echo base_url('assets/img/noc.png');?>"></a>
 
 		<div class="toolbar-icon-bg hidden-xs" id="toolbar-search">
             <div class="input-group">
@@ -252,7 +252,7 @@
 				<li><a href="#/"><i class="ti ti-view-list-alt"></i><span>Statement</span></a></li>
 				<li><a href="#/"><i class="ti ti-money"></i><span>Withdrawals</span></a></li>
 				<li class="divider"></li>
-				<li><a href="#/"><i class="ti ti-shift-right"></i><span>Sign Out</span></a></li>
+				<li><a href="<?php echo site_url('login/logout') ?>"><i class="ti ti-shift-right"></i><span>Sign Out</span></a></li>
 			</ul>
 		</li>
 

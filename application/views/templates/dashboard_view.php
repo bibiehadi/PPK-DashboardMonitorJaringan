@@ -93,7 +93,7 @@
 							</div>
 							<div class="panel-editbox" data-widget-controls=""></div>
 							<div class="panel-body">					
-								<div class="mychart" id="chart1" data-title="" style="height: 272px;" data-interface="E10"></div>
+								<div class="mychart" id="chart1" data-title="" style="height: 272px;" data-interface="E10-Bisnis100"></div>
 
 							</div>
 						</div>
@@ -113,7 +113,7 @@
 							</div>
 							<div class="panel-editbox" data-widget-controls=""></div>
 							<div class="panel-body">					
-								<div class="mychart" id="chart2" data-title="" style="height: 272px;" data-interface="E11"></div>
+								<div class="mychart" id="chart2" data-title="" style="height: 272px;" data-interface="E11-BPro100"></div>
 
 							</div>
 						</div>
@@ -136,7 +136,7 @@
 							</div>
 							<div class="panel-editbox" data-widget-controls=""></div>
 							<div class="panel-body">					
-								<div class="mychart" id="chart3" data-title="" style="height: 272px;" data-interface="E12"></div>
+								<div class="mychart" id="chart3" data-title="" style="height: 272px;" data-interface="E12-Bisnis300"></div>
 
 							</div>
 						</div>
@@ -157,7 +157,7 @@
 							<div class="panel-editbox" data-widget-controls=""></div>
 							<div class="panel-body">
 								<!-- <div id="socialstats" style="height: 272px;" class="mt-sm mb-sm"></div> -->
-								<div class="mychart" id="chart4" data-title="" style="height: 272px;" data-interface="E13"></div>
+								<div class="mychart" id="chart4" data-title="" style="height: 272px;" data-interface="E13-RadioIndosat"></div>
 
 							</div>
 						</div>
@@ -316,9 +316,29 @@
         $('.mychart').each(function(){
 			graphArea($(this).attr('id'));
 		})
-		
+		setInterval(function(){ tmpChart('E10-Bisnis100'); }, 5000);
+		setInterval(function(){ tmpChart('E11-BPro100'); }, 5000);
+		setInterval(function(){ tmpChart('E12-Bisnis300'); }, 5000);
+		setInterval(function(){ tmpChart('E13-RadioIndosat'); }, 5000);
 		$('.highcharts-credits').hide();	
 	})
+	var tx = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []},
+	rx = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []},
+	point = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []};
+
+	function tmpChart(iface){
+			$.get(_site_url+'/dashboard/getTrafficInterface/'+iface,function(respon) {
+				if (tx[iface].length == 10) {
+					tx[iface].shift();
+					rx[iface].shift();
+					point[iface].shift();
+				}
+				tx[iface].push(parseInt(respon.tx));	
+				rx[iface].push(parseInt(respon.rx));
+				point[iface].push(respon.point);	
+	        },'json')
+        // setTimeout(function(){ tmpChart(); }, 1000);
+	}
 
 	function mainResource(){
 		$.get(_site_url+'/dashboard/mainResource',function(respon) {
@@ -352,27 +372,30 @@
 	var chart;
 	function requestData(iface,id) 
 	{
-		$.ajax({
-			url: _site_url+'/dashboard/getTrafficInterface/',     						
-			type: "POST",
-			dataType: "JSON",
-			data: {iface:iface} ,
-			success: function(data) {	
-				var x = data.point[0];
-				var y = data.tx[0];
- 				// charts[id].xAxis[0].setCategories(data.point);
-				// charts[id].series[0].setData(data.tx);
-				charts[id].series[0].addPoint([x,y], true, true);
 
-				// charts[id].series[1].setData(data.rx);
-				charts[id].series[1].addPoint([data.point[0], data.rx[0]], true, true);
-				// console.log(charts[id].series[0].add);
-				// console.log(charts[id].series[1]);
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) { 
-			  console.error("Status: " + textStatus + " request: " + XMLHttpRequest); console.error("Error: " + errorThrown); 
-			}       
-		});
+		// $.ajax({
+		// 	url: _site_url+'/dashboard/getTrafficInterface/',     						
+		// 	type: "POST",
+		// 	dataType: "JSON",
+		// 	data: {iface:iface} ,
+		// 	success: function(data) {	
+		// 		var x = data.point[0];
+		// 		var y = data.tx[0];
+				// console.log(tx,rx,point);
+				// console.log(tx);
+ 				charts[id].xAxis[0].setCategories(point[iface]);
+				charts[id].series[0].setData(tx[iface]);
+				charts[id].series[1].setData(rx[iface]);
+				// charts[id].series[0].addPoint([x,y], true, true);
+
+				// charts[id].series[1].addPoint([data.point[0], data.rx[0]], true, true);
+				
+				// console.log(tx);
+		// 	},
+		// 	error: function(XMLHttpRequest, textStatus, errorThrown) { 
+		// 	  console.error("Status: " + textStatus + " request: " + XMLHttpRequest); console.error("Error: " + errorThrown); 
+		// 	}       
+		// });
 		
 	}
 
@@ -381,23 +404,37 @@
 		if(!container.length) return false;
 		var interface = container.data('interface');
 		var title = container.data('title');
+		
+		Highcharts.addEvent(Highcharts.Series, 'afterInit', function () {
+			this.symbolUnicode = {
+			circle: '●',
+			diamond: '♦',
+			square: '■',
+			triangle: '▲',
+			'triangle-down': '▼'
+			}[this.symbol] || '●';
+		});		
+
+
 		charts[id] = new Highcharts.Chart({
 		    chart: {
 		    	renderTo: id,
 		        type: 'area',
+		        animation: Highcharts.svg,
+		  		type: 'areaspline',
 		        events: {
 					load: function () {
 					  setInterval(function () {
 						requestData(interface, id);
-					  }, 1000);
+					  }, 5000);
 					}				
 				  }
 		    },
 		    title: {text: title
 		    },
 		    xAxis: {
-		        type: 'datetime',
-        		tickPixelInterval: 150
+		        // type: 'datetime',
+        		// tickPixelInterval: 150
 		    },
 		    yAxis: {
 		        minPadding: 0.2,
@@ -405,11 +442,12 @@
 				title: {text: null},
 				labels: {
 				  formatter: function () {      
-					var bytes = this.value;                          
+					var bits = this.value;                          
 					var sizes = ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'];
-					if (bytes == 0) return '0 bps';
-					var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-					return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];                    
+					if (bits == 0) return '0 bps';
+					var i = parseInt(Math.floor(Math.log(bits) / Math.log(1024)));
+					return parseFloat((bits / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];                    	
+			
 				  },
 				}, 
 		    },
@@ -420,50 +458,24 @@
 			  shared: true                                                      
 			},
 			series: [
-				{name: 'Tx', data: (function () {
-            // generate an array of random data
-            var data = [],
-                time = (new Date()).getTime(),
-                i;
-
-            for (i = -19; i <= 0; i += 1) {
-                data.push({
-                    x: time + i * 1000,
-                    y: Math.random()*100000000	
-                });
-            }
-            return data;
-        }()), marker: {symbol: 'circle'}}, 
-				{name: 'Rx', data: (function () {
-            // generate an array of random data
-            var data = [],
-                time = (new Date()).getTime(),
-                i;
-
-            for (i = -19; i <= 0; i += 1) {
-                data.push({
-                    x: time + i * 1000,
-                    y: Math.random()*100000000
-                });
-            }
-            return data;
-        }()), marker: {symbol: 'circle'}}
+				{name: 'Tx', data: [], marker: {symbol: 'circle'}}, 
+				{name: 'Rx', data: [], marker: {symbol: 'circle'}}
 			],
-		    plotOptions: {
-		        area: {
-		            // pointStart: function,
-		            marker: {
-		                enabled: false,
-		                symbol: 'circle',
-		                radius: 2,
-		                states: {
-		                    hover: {
-		                        enabled: true
-		                    }
-		                }
-		            }
-		        }
-		    },
+		    // plotOptions: {
+		    //     area: {
+		    //         // pointStart: function,
+		    //         marker: {
+		    //             enabled: false,
+		    //             symbol: 'circle',
+		    //             radius: 2,
+		    //             states: {
+		    //                 hover: {
+		    //                     enabled: true
+		    //                 }
+		    //             }
+		    //         }
+		    //     }
+		    // },
 		});
 	}
 

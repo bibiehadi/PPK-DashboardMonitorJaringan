@@ -98,8 +98,8 @@ class Mikrotik_connect extends CI_Model {
 		   	$READ = $API->read(false);
 		   	$ARRAY = $API->parseResponse($READ);
 			if(count($ARRAY)>0){  
-				$rx = number_format($ARRAY[0]["rx-bits-per-second"]/1024,1);
-				$tx = number_format($ARRAY[0]["tx-bits-per-second"]/1024,1);
+				$rx = $ARRAY[0]["rx-bits-per-second"];
+				$tx = $ARRAY[0]["tx-bits-per-second"];
 				$rows['tx'][] = $tx;
 				$rows['rx'][] = $rx;
 				$rows['point'][] = date("h:i:s");

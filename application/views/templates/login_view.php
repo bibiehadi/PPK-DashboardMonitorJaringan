@@ -29,7 +29,7 @@
         
         
 <div class="container" id="login-form">
-	<a href="index.html" class="login-logo"><img src="<?php echo base_url('') ?>assets/img/logo-big.png"></a>
+	<a href="index.html" class="login-logo"><img src="<?php echo base_url('assets/img/noc.png')?>"></a>
 		<div class="row">
 			<div class="col-md-4 col-md-offset-4">
 				<div class="panel panel-default">

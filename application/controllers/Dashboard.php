@@ -108,8 +108,8 @@
 		));
  	}
 
- 	function getTrafficInterface(){
- 		$interface = $this->mikrotik->getTrafficInterface('E13-RadioIndosat');
+ 	function getTrafficInterface($iface){
+ 		$interface = $this->mikrotik->getTrafficInterface($iface);
  		echo json_encode($interface);
  	}
 
