@@ -73,16 +73,18 @@
 				                   <div class="modal-body">
 				                   	<a class="btn btn-info" href="javascript:;" id="device_reboot"> reboot</a>
 				                                                 <strong>Anda yakin mau menambahkan device ini?</strong><br>
-				                                                 <strong>Device ID</strong><br>
-				                                                 <input type="input" name="device_id" class="form-control" readonly>
+				                                                 <!-- <strong>Device ID</strong><br>
+				                                                 <input type="input" name="device_id" class="form-control" readonly> -->
 				                                                 <strong>Identity</strong><br>
-				                                                 <input type="input" name="device_identity" class="form-control" readonly>
+				                                                 <input type="input" name="identity" class="form-control" readonly>
 				                                                 <strong>Mac-Address</strong><br>
-				                                                 <input type="input" name="device_MAC" class="form-control" readonly>
+				                                                 <input type="input" name="mac-address" class="form-control" readonly>
 				                                                 <strong>IP-Address</strong><br>
-				                                                 <input type="input" name="device_IPv4" class="form-control" readonly>
+				                                                 <input type="input" name="address4" class="form-control" readonly>
 				                                                 <strong>OS Version</strong><br>
-				                                                 <input type="input" name="device_OSVersion" class="form-control" readonly>
+				                                                 <input type="input" name="version" class="form-control" readonly>
+				                                                 <strong>Board</strong><br>
+				                                                 <input type="input" name="board" class="form-control" readonly>
 				                   </div>
 				                   <div class="modal-footer">
 				                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -144,14 +146,17 @@
 
 	 	$('#findDevices').on('click','.add_device',function(){
 	 	var device_identity=$(this).data('identity');
-	 	var device_MAC=$(this).data('mac-address');
-	 	var device_IPv4=$(this).data('address4');
+	 	var device_MAC=$(this).data('mac');
+	 	var device_IPv4=$(this).data('ip');
 	 	var device_OSVersion=$(this).data('version');
+	 	var device_board=$(this).data('board');
+	 	console.log(device_MAC);
             $('#ModalAddDevice').modal('show');
             $('[name="identity"]').val(device_identity);
-            $('[name="mac-address"]').val(device_mac-address);
-            $('[name="address4"]').val(device_address4);
-            $('[name="version"]').val(device_version);
+            $('[name="mac-address"]').val(device_MAC);
+            $('[name="address4"]').val(device_IPv4);
+            $('[name="version"]').val(device_OSVersion);
+            $('[name="board"]').val(device_board);
     	});
 			
 			// table: var table = $('#findDevices').DataTable();
@@ -166,11 +171,11 @@
 			
 		// }
 		$(document).ready(function(){
-			setTimeout(function(){ getDeviceJsonByInterval(); }, 3000); // 3 Second
+			setTimeout(function(){ getDeviceJsonByInterval(); }, 300); // 3 Second
 		})
 		function getDeviceJsonByInterval(){
 			$.get("<?php echo site_url()?>/discover/findNewDevicesJSON",function(respon){
-				table.ajax.reload();
+				// table.ajax.reload();
 				setTimeout(function(){ getDeviceJsonByInterval(); }, 3000); // 3 Second		
 			}).fail(function(data){
 				alert('Gagal mengambil devices data');

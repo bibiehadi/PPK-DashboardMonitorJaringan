@@ -289,8 +289,18 @@
 				<li><a href="<?php echo site_url('dashboard') ?>"><i class="ti ti-dashboard"></i><span>Dashboard</span><span class="badge badge-teal">2</span></a></li>	
 				<li><a href="javascript:;"><i class="ti ti-harddrive"></i><span>Discovery Devices</span></a>
 					<ul class="acc-menu">
-						<li><a href="<?php echo site_url('discover/ourDevices'); ?>">Our Devices</a></li>
-						<li><a href="<?php echo site_url('discover/findNewDevices'); ?>">Find New Devices</a></li>
+						<li><a href="#"><span>Our Devices</span></a>
+							<ul class="acc-menu">
+								<li><a href="<?php echo site_url('discover/ourDevices'); ?>">MikroTik</a></li>
+								<li><a href="#">Unifi</a></li>
+							</ul>
+						</li>
+						<li><a href="#"><span>Find Devices</span></a>
+							<ul class="acc-menu">
+								<li><a href="<?php echo site_url('discover/findNewDevices'); ?>">Mikrotik</a></li>
+								<li><a href="#">Unifi</a></li>
+							</ul>
+						</li>
 					</ul>	
 				</li>
 				<li><a href="javascript:;"><i class="ti ti-rss-alt"></i><span>Hotspot</span></a>

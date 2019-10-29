@@ -1,11 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+set_include_path(get_include_path() . PATH_SEPARATOR . APPPATH . 'third_party/phpseclib');
+include(APPPATH . '/third_party/phpseclib/Net/SSH2.php');
 
+		// include('Net/SSH2.php');
 class Discover extends CI_Controller {
 
 	public function __construct()
 	{
 		parent::__construct();
+		
 		if ($this->session->userdata['status']!='login') {
  			redirect('login');
  		}
@@ -27,7 +31,7 @@ class Discover extends CI_Controller {
 
 	public function ourDevices(){	
 		$this->load->view('templates/ourdevices_view');	
-		// $devices = $this->mikrotik->getDeviceID();
+		// $devices = $this->mikrotik->get DeviceID();
 		// print_r($devices);
 	}
 
@@ -80,7 +84,6 @@ class Discover extends CI_Controller {
 
 	public function findNewDevices()
 	{
-		
 		$this->load->view('templates/finddevices_view');
 	}
 
@@ -120,7 +123,7 @@ class Discover extends CI_Controller {
 				}else{
 					$connect['board'] = '';	
 				}
-				$connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".'>..<a>';
+				$connect['action']= '<a class="add_device btn btn-sm btn-primary" href="javascript:void(0)" title="addDevice" data-identity='."'".$connect['identity']."'".' data-mac='."'".$connect['mac-address']."'".' data-ip='."'".$connect['address4']."'".' data-version='."'".$connect['version']."'".' data-board='."'".$connect['board']."'".'>..<a>';
 				
 				$devices[]=$connect;
 			}			    		
@@ -207,21 +210,21 @@ class Discover extends CI_Controller {
 		echo json_encode($output);
  	}
 
- 	// public function regDevice($mac)
- 	// {
- 	// 	$regDevices = $this->mikrotik->getDeviceID();
- 	// 	$same = 0;
- 	// 	foreach ($regDevices as $regDevice) {
- 	// 		if ($regDevice['device_id'] == $mac) {
- 	// 			$same++;
- 	// 		}
- 	// 	}
- 	// 	if ($same == 0) {
- 	// 		return true;
- 	// 	}else{
- 	// 		return false;
- 	// 	}
- 	// }
+ 	public function regDevice($mac)
+ 	{
+ 		$regDevices = $this->mikrotik->getDeviceID();
+ 		$same = 0;
+ 		foreach ($regDevices as $regDevice) {
+ 			if ($regDevice['device_id'] == $mac) {
+ 				$same++;
+ 			}
+ 		}
+ 		if ($same == 0) {
+ 			return true;
+ 		}else{
+ 			return false;
+ 		}
+ 	}
 
  	public function countPing($address){
  		$ping = $this->discover->pingCount($address);
@@ -236,10 +239,13 @@ class Discover extends CI_Controller {
  	public function addDevice(){
  		$device = $this->input->post();
 		if ($device) {
-			$this->mikrotik->addDevice($device);
-			redirect('discover/ourDevices','refresh');
+			$this->setDefaultSetting($device['address4']);
+			if ($this->mikrotik->addDevice($device)) {
+				$this->session->set_flashdata('success', 'Add a device successfully');
+				redirect('discover/ourDevices','refresh');
+			}
 		}else{
-			echo "Error!!, can't add a device. ";
+			$this->session->set_flashdata('error', 'Something is wrong.');
 		}
 	}
 
@@ -249,27 +255,44 @@ class Discover extends CI_Controller {
 	// 	return implode(':', $mac_id);
 	// }
 
-	function getDetailDevice(){
-		$data = array(
-            'mac' => $this->input->post('mac'),
-            'address' => $this->input->post('address'),
-        );
-        if (isset($data['address'])){
-        	$address = $data['address'];
-        }else{
-        	$address = $data['mac'];
-        }
-        print_r($address);
-		$identity = $this->mikrotik->getDeviceIdentity($address);
-		print_r($identity);
-		?> 
+	// function getDetailDevice(){
+	// 	$data = array(
+ //            'mac' => $this->input->post('mac'),
+ //            'address' => $this->input->post('address'),
+ //        );
+ //        if (isset($data['address'])){
+ //        	$address = $data['address'];
+ //        }else{
+ //        	$address = $data['mac'];
+ //        }
+ //        print_r($address);
+	// 	$identity = $this->mikrotik->getDeviceIdentity($address);
+	// 	print_r($identity);
+	// 	
 
-		<div>
-			<h2><?php echo $identity[0]['name']; ?></h2>
-		</div>
+	// 	<div>
+	// 		<h2><?php echo $identity[0]['name']; 
+	// 	</div>
 
 
-		<?
+	// 	<?
+	// }
+
+	function setDefaultSetting($ip){
+		$ssh = new Net_SSH2($ip);
+		if (!$ssh->login('admin', '')) {
+		    exit('Login Failed');
+		}
+		$config = $this->db->query("select config from tbl_config");
+		$cfg = $config->result_array(); 
+		foreach ($cfg as $key) {
+			try {
+				$ssh->exec($key['config']);
+			} catch (Exception $e) {
+				echo $e;
+			}
+		}
+
 	}
 }
 

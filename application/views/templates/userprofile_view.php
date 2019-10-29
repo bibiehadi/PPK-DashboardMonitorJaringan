@@ -39,13 +39,27 @@
                                           <tbody>
                                             <?php foreach ($profiles as $profile) {?>
                                               <tr>
-                                                <td><?echo $profile['.id'];?></td>
-                                                <td><?echo $profile['name'];?></td>
-                                                <td><?echo $profile['idle-timeout'];?></td>
-                                                <td><?echo $profile['keepalive-timeout'];?></td>
-                                                <td><?echo $profile['shared-users'];?></td>
-                                                <td><?echo $profile['mac-cookie-timeout'];?></td>
-                                                <td><?echo $profile['rate-limit'];?></td>
+                                                <td><?if (isset($profile['.id'])) {
+                                                  echo $profile['.id'];
+                                                }?></td>
+                                                <td><? if (isset($profile['name'])) {
+                                                  echo $profile['name'];
+                                                }?></td>
+                                                <td><?if (isset($profile['idle-timeout'])) {
+                                                  echo $profile['idle-timeout'];
+                                                }?></td>
+                                                <td><?if (isset($profile['keepalive-timeout'])) {
+                                                  echo $profile['keepalive-timeout'];
+                                                }?></td>
+                                                <td><?if (isset($profile['shared-users'])) {
+                                                  echo $profile['shared-users'];
+                                                }?></td>
+                                                <td><?if (isset($profile['mac-cookie-timeout'])) {
+                                                  echo $profile['mac-cookie-timeout'];
+                                                }?></td>
+                                                <td><?if (isset($profile['rate-limit'])) {
+                                                  echo $profile['rate-limit'];
+                                                }?></td>
                                             <? }?>
                                             </tr>
                                           </tbody>

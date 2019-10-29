@@ -29,13 +29,13 @@ class Mikrotik_connect extends CI_Model {
 		}
 	}
 
-	// public function addDevice($data){
-	// 	if ($this->db->insert('tb_devices',$data)) {
-	// 		return true;
-	// 	}else{
-	// 		return false;
-	// 	}
-	// }
+	public function addDevice($data){
+		if ($this->db->insert('tbl_mDevices',$data)) {
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	public function getDeviceID(){
 		$this->db->select('device_id');

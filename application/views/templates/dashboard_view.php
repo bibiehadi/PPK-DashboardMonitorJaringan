@@ -166,7 +166,7 @@
 
 
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div class="panel panel-gray" data-widget='{"id" : "wiget1", "draggable": "false"}'>
 			                <div class="panel-heading">
 			                	<h2>Log Main Router</h2>
@@ -184,7 +184,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-4">
 						<div class="panel panel-teal" data-widget='{"id" : "wiget2", "draggable": "false"}'>
 							<div class="panel-heading">
 								<h2>CPU Load</h2>
@@ -203,7 +203,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-4">
 						<div class="panel panel-teal" data-widget='{"id" : "wiget2", "draggable": "false"}'>
 							<div class="panel-heading">
 								<h2>Memory Load</h2>
@@ -215,7 +215,7 @@
 									>
 								</div>
 							</div>
-							<div class="panel-body no-padding scroll-pane" style="height: 320px;">
+							<div class="panel-body scroll-pane no-padding" style="height: 320px;">
 								<div class="scroll-content" data-konten='memory_load'>
 
 								</div>
@@ -271,9 +271,9 @@
 	var _site_url = '<?php echo site_url()?>';
 	
 	$(document).ready(function(){
-		setTimeout(function(){ loadResource(); }, 3000);
-		setTimeout(function(){ loadLog(); }, 3000);
-		setTimeout(function(){ mainResource(); }, 3000);
+		// setTimeout(function(){ loadResource(); }, 5000);
+		// setTimeout(function(){ loadLog(); }, 5000);
+		setTimeout(function(){ mainResource(); }, 5000);
 		$('.easypiechart#cpu_load').easyPieChart({
             barColor: "#16a085",
             trackColor: 'transparent',
@@ -316,12 +316,13 @@
         $('.mychart').each(function(){
 			graphArea($(this).attr('id'));
 		})
-		setInterval(function(){ tmpChart('E10-Bisnis100'); }, 5000);
-		setInterval(function(){ tmpChart('E11-BPro100'); }, 5000);
-		setInterval(function(){ tmpChart('E12-Bisnis300'); }, 5000);
-		setInterval(function(){ tmpChart('E13-RadioIndosat'); }, 5000);
+		setInterval(function(){ tmpChart('E10-Bisnis100'); }, 10000);
+		setInterval(function(){ tmpChart('E11-BPro100'); }, 10000);
+		setInterval(function(){ tmpChart('E12-Bisnis300'); }, 10000);
+		setInterval(function(){ tmpChart('E13-RadioIndosat'); }, 10000);
 		$('.highcharts-credits').hide();	
 	})
+	
 	var tx = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []},
 	rx = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []},
 	point = {'E10-Bisnis100': [] , 'E11-BPro100' : [], 'E12-Bisnis300': [] , 'E13-RadioIndosat' : []};
@@ -348,25 +349,23 @@
             $('.easypiechart#memory_load').data('easyPieChart').update(parseInt(memory_load));
             $('.easypiechart#free_hdd').data('easyPieChart').update(parseInt(free_hdd));
         },'json')
-        setTimeout(function(){ mainResource(); }, 3000);
+        setTimeout(function(){ mainResource(); }, 5000);
 	}
 
-	function loadLog(){
-		$.get(_site_url+'/dashboard/getLog',function(respon){
-			$('div[data-konten="log_router"').html(respon.log);
-		},'json')
-		setTimeout(function(){ loadLog(); }, 3000);
-	}
+	// function loadLog(){
+	// 	$.get(_site_url+'/dashboard/getLog',function(respon){
+	// 		$('div[data-konten="log_router"').html(respon.log);
+	// 	},'json')
+	// 	setTimeout(function(){ loadLog(); }, 100000);
+	// }
 
-	function loadResource(){
-		$.get(_site_url+'/dashboard/getAllResource',function(respon){
-			$('div[data-konten="memory_load"]').html(respon.memory);
-		},'json')
-		$.get(_site_url+'/dashboard/getAllResource',function(respon){
-			$('div[data-konten="cpu_load"]').html(respon.cpu);
-		},'json')
-		setTimeout(function(){ loadResource(); }, 2000);
-	}
+	// function loadResource(){
+	// 	$.get(_site_url+'/dashboard/getAllResource',function(respon){
+	// 		$('div[data-konten="memory_load"]').html(respon.memory);
+	// 		$('div[data-konten="cpu_load"]').html(respon.cpu);
+	// 	},'json')
+	// 	setTimeout(function(){ loadResource(); }, 2000);
+	// }
 
 	var charts = {};
 	var chart;

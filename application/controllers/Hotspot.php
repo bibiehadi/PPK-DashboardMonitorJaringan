@@ -74,7 +74,7 @@ $neighbors = $this->mikrotik->getNeighbours();
  	}
 
  	public function userProfiles(){
- 		$data['profiles'] = $this->hotspot->getProfiles();
+ 		$data['profiles'] = $this->mikrotik->getUserProfiles();
  		// print_r($data['profiles']);
  		// echo '<pre>';
  		$this->load->view('templates/userprofile_view',$data);
